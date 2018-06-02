@@ -28,6 +28,7 @@ const int MSN_CHECK_CROSSROAD = 2;
 const int MSN_MOVE_STRIGHT = 3;
 const int MSN_TURN_RIGHT = 4;
 const int MSN_TURN_LEFT = 5;
+const int MSN_FIND_ROAD = 6;
 
 int move = 0;
 const int MOVE_FORWARD_RIGHT = 0;
@@ -179,13 +180,16 @@ void loop() {
 				break;
 			}
 		}
-		//moveStraight();
+		moveStraight();
 		break;
 	case(MSN_TURN_RIGHT):
-
+		turnRight();
 		break;
 	case(MSN_TURN_LEFT):
-
+		turnLeft();
+		break;
+	case(MSN_FIND_ROAD):
+		findRoad();
 		break;
 	}
 }
@@ -400,14 +404,44 @@ void moveStraight() {
 
 void turnRight() {
 	double firstAngle = angle();
-	while(abs(firstAngle-angle()){
-	digitalWrite(RMotorF, HIGH);
-	digitalWrite(LMotorB, HIGH);
-	digitalWrite(RMotorS, 100);
-	digitalWrite(LMotorS, 100);
-}
+	while (abs(abs(firstAngle) - abs(angle())) < 90) {
+		digitalWrite(RMotorF, HIGH);
+		digitalWrite(LMotorB, HIGH);
+		digitalWrite(RMotorS, 100);
+		digitalWrite(LMotorS, 100);
+	}
+	digitalWrite(RMotorF, LOW);
+	digitalWrite(LMotorB, LOW);
+	mission = MSN_FIND_ROAD;
 }
 
+void turnLeft() {
+	double firstAngle = angle();
+	while (abs(abs(firstAngle) - abs(angle())) < 90) {
+		digitalWrite(RMotorB, HIGH);
+		digitalWrite(LMotorF, HIGH);
+		digitalWrite(RMotorS, 100);
+		digitalWrite(LMotorS, 100);
+	}
+	digitalWrite(RMotorB, LOW);
+	digitalWrite(LMotorF, LOW);
+	mission = MSN_FIND_ROAD;
+}
+
+void findRoad() {
+	myservo.write(45);
+	if (distance(outputUSRight, inputUSRight, 0) < 10) {
+		move = MOVE_FORWARD_RIGHT;
+		mission = MSN_MOVE_STRIGHT;
+	}
+	else {
+		myservo.write(135);
+		if (distance(outputUSLeft, inputUSLeft, 0) < 10) {
+			move = MOVE_FORWARD_LEFT;
+			mission = MSN_MOVE_STRIGHT;
+		}
+	}
+}
 
 
 
