@@ -430,3 +430,12 @@ void printIMUData(void)
 	////BTserial.println("Time: " + String(imu.time) + " ms");
 	////BTserial.println();
 }
+
+void print2(String s) {
+	Serial.print(s);
+	BTserial.print(s);
+}
+void print2ln(String s) {
+	Serial.println(s);
+	BTserial.println(s);
+}
