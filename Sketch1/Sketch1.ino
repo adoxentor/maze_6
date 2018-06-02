@@ -193,8 +193,16 @@ void loop() {
 		break;
 	}
 }
+double yaw() {
 
-double angle() {
+	ret = mympu_update();
+	// errorReporting(); // turn on for debug information
+
+	return mympu.ypr[0];
+}
+
+
+double angleDebug() {
 //	imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
 //	magX = imu.calcMag(imu.mx);
 //	magY = imu.calcMag(imu.my);
@@ -403,7 +411,7 @@ void moveStraight() {
 }
 
 void turnRight() {
-	double firstAngle = angle();
+	double firstAngle = yaw();
 	while (abs(abs(firstAngle) - abs(angle())) < 90) {
 		digitalWrite(RMotorF, HIGH);
 		digitalWrite(LMotorB, HIGH);
@@ -416,8 +424,8 @@ void turnRight() {
 }
 
 void turnLeft() {
-	double firstAngle = angle();
-	while (abs(abs(firstAngle) - abs(angle())) < 90) {
+	double firstAngle = yaw();
+	while (abs(abs(firstAngle) - abs(yaw())) < 90) {
 		digitalWrite(RMotorB, HIGH);
 		digitalWrite(LMotorF, HIGH);
 		digitalWrite(RMotorS, 100);
