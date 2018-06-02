@@ -474,11 +474,13 @@ void printIMUData(void)
 	////print2ln();
 }
 
-void print2(String s) {
+void print2(auto  s) {
 	Serial.print(s);
 	BTserial.print(s);
 }
-void print2ln(String s) {
+void print2ln(auto  s) {
 	Serial.println(s);
 	BTserial.println(s);
 }
+
+
