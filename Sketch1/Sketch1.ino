@@ -26,8 +26,8 @@ int mission = 3;
 const int MSN_SYNCING = 1;
 const int MSN_CHECK_CROSSROAD = 2;
 const int MSN_MOVE_STRIGHT = 3;
-const int MSN_MOVE_RIGHT = 4;
-const int MSN_MOVE_LEFT = 5;
+const int MSN_TURN_RIGHT = 4;
+const int MSN_TURN_LEFT = 5;
 
 int move = 0;
 const int MOVE_FORWARD_RIGHT = 0;
@@ -74,13 +74,12 @@ boolean b = true;
 boolean synced = false;
 
 SoftwareSerial BTserial(10, 11);
-
 int ret;
 
 void setup() {
 	//myservo.attach(7);
 	BTserial.begin(9600);
-	Serial.begin(9600);
+	BTserial.begin(9600);
 	pinMode(LMotorB, OUTPUT);
 	pinMode(LMotorF, OUTPUT);
 	pinMode(LMotorS, OUTPUT);
@@ -93,13 +92,13 @@ void setup() {
 	pinMode(inputUSRight, INPUT);
 	pinMode(outputUSRight, OUTPUT);
 
-	Serial.println("begin");
+	BTserial.println("begin");
 
 
 	Fastwire::setup(400, 0);
 	ret = mympu_open(200);
-	Serial.print("MPU init: "); Serial.println(ret);
-	Serial.print("Free mem: "); Serial.println(freeRam());
+	BTserial.print("MPU init: "); BTserial.println(ret);
+	BTserial.print("Free mem: "); BTserial.println(freeRam());
 
 
 
@@ -182,10 +181,10 @@ void loop() {
 		}
 		//moveStraight();
 		break;
-	case(MSN_MOVE_RIGHT):
+	case(MSN_TURN_RIGHT):
 
 		break;
-	case(MSN_MOVE_LEFT):
+	case(MSN_TURN_LEFT):
 
 		break;
 	}
@@ -214,12 +213,12 @@ double angle() {
 		// errorReporting(); // turn on for debug information
 
 		if (!(c % 25)) { // output only every 25 MPU/DMP reads
-			Serial.print("Y: "); Serial.print(mympu.ypr[0]);
-			Serial.print(" P: "); Serial.print(mympu.ypr[1]);
-			Serial.print(" R: "); Serial.print(mympu.ypr[2]);
-			Serial.print("\tgy: "); Serial.print(mympu.gyro[0]);
-			Serial.print(" gp: "); Serial.print(mympu.gyro[1]);
-			Serial.print(" gr: "); Serial.println(mympu.gyro[2]);
+			BTserial.print("Y: "); BTserial.print(mympu.ypr[0]);
+			BTserial.print(" P: "); BTserial.print(mympu.ypr[1]);
+			BTserial.print(" R: "); BTserial.print(mympu.ypr[2]);
+			BTserial.print("\tgy: "); BTserial.print(mympu.gyro[0]);
+			BTserial.print(" gp: "); BTserial.print(mympu.gyro[1]);
+			BTserial.print(" gr: "); BTserial.println(mympu.gyro[2]);
 			delay(100);
 
 		}
@@ -242,7 +241,7 @@ void syncingMaze() {
 //	if (imu.dataReady())
 //	{
 //		Serial.println("Press 'S' to syncing the program");
-//		if (true|| Serial.available() && BTserial.read() == 'S') {
+//		if (true|| BTserial.available() && BTserial.read() == 'S') {
 //			Serial.println("Syncing the program");
 //			if (maxMagX == 100000) {
 //				imu.update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
@@ -295,6 +294,8 @@ void syncingMaze() {
 //		Serial.println("Loading...");
 //	}
 }
+
+
 void moveStraight() {
 	int outputUS_Side;
 	int inputUS_Side;
@@ -356,7 +357,7 @@ void moveStraight() {
 					farDis = farDis / 2;
 				}
 				if (farDis > 15) {
-					mission = 2;
+					mission = MSN_CHECK_CROSSROAD;
 					digitalWrite(RMotorF, LOW);
 					digitalWrite(LMotorF, LOW);
 					digitalWrite(RMotorB, LOW);
@@ -386,7 +387,7 @@ void moveStraight() {
 				digitalWrite(LMotorF, LOW);
 				digitalWrite(RMotorB, LOW);
 				digitalWrite(LMotorB, LOW);
-				mission = 2;
+				mission = MSN_CHECK_CROSSROAD;
 				break;
 			}
 
@@ -397,7 +398,15 @@ void moveStraight() {
 
 }
 
-
+void turnRight() {
+	double firstAngle = angle();
+	while(abs(firstAngle-angle()){
+	digitalWrite(RMotorF, HIGH);
+	digitalWrite(LMotorB, HIGH);
+	digitalWrite(RMotorS, 100);
+	digitalWrite(LMotorS, 100);
+}
+}
 
 
 
@@ -429,4 +438,9 @@ void printIMUData(void)
 	////	String(magY) + ", " + String(magZ) + " uT");
 	////BTserial.println("Time: " + String(imu.time) + " ms");
 	////BTserial.println();
+}
+
+void print2(String s) {
+	Serial.print(s);
+	BTserial.print(s);
 }
