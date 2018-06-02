@@ -78,7 +78,7 @@ int ret;
 
 void setup() {
 	//myservo.attach(7);
-	BTserial.begin(9600);
+	Serial.begin(9600);
 	BTserial.begin(9600);
 	pinMode(LMotorB, OUTPUT);
 	pinMode(LMotorF, OUTPUT);
@@ -92,13 +92,13 @@ void setup() {
 	pinMode(inputUSRight, INPUT);
 	pinMode(outputUSRight, OUTPUT);
 
-	BTserial.println("begin");
+	print2ln("begin");
 
 
 	Fastwire::setup(400, 0);
 	ret = mympu_open(200);
-	BTserial.print("MPU init: "); BTserial.println(ret);
-	BTserial.print("Free mem: "); BTserial.println(freeRam());
+	print2("MPU init: "); print2ln(ret);
+	print2("Free mem: "); print2ln(freeRam());
 
 
 
@@ -107,7 +107,7 @@ void setup() {
 	// INV_XYZ_GYRO, INV_XYZ_ACCEL, INV_XYZ_COMPASS,
 	// INV_X_GYRO, INV_Y_GYRO, or INV_Z_GYRO
 	// Enable all sensors:
-	//BTserial.println(imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS));
+	//print2ln(imu.setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS));
 
 	// Use setGyroFSR() and setAccelFSR() to configure the
 	// gyroscope and accelerometer full scale ranges.
@@ -148,10 +148,10 @@ void loop() {
 
 		break;
 	case(MSN_MOVE_STRIGHT):
-		BTserial.println("Choose the side of the wall that the robot need to follow (send 'R' for right and 'L' for left)");
+		print2ln("Choose the side of the wall that the robot need to follow (send 'R' for right and 'L' for left)");
 		while (1) {
 			if (BTserial.available() && BTserial.read() == 'R') {
-				BTserial.println("Choose the direction that the robot will drive (send 'F' for forward and 'B' for backward)");
+				print2ln("Choose the direction that the robot will drive (send 'F' for forward and 'B' for backward)");
 				while (1) {
 					if (BTserial.read() == 'F') {
 						move = MOVE_FORWARD_RIGHT;
@@ -165,7 +165,7 @@ void loop() {
 				break;
 			}
 			if (BTserial.available() && BTserial.read() == 'L') {
-				BTserial.println("Choose the direction that the robot will drive (send 'F' for forward and 'B' for backward)");
+				print2ln("Choose the direction that the robot will drive (send 'F' for forward and 'B' for backward)");
 				while (1) {
 					if (BTserial.read() == 'F') {
 						move = MOVE_FORWARD_LEFT;
@@ -197,10 +197,10 @@ double angle() {
 //
 //	magX100 = ((magX - minMagX) / (maxMagX - minMagX)) - 0.5;
 //	magY100 = ((magY - minMagY) / (maxMagY - minMagY)) - 0.5;
-//	//   BTserial.println(String(magX100));
-//	//   BTserial.println(String(magY100));
+//	//   print2ln(String(magX100));
+//	//   print2ln(String(magY100));
 //	angleNow = atan2(magX100, magY100) * 180 / PI;
-//	//BTserial.println(String(angleNow));
+//	//print2ln(String(angleNow));
 //	return angleNow;
 
 	unsigned int c = 0; //cumulative number of successful MPU/DMP reads
@@ -213,12 +213,12 @@ double angle() {
 		// errorReporting(); // turn on for debug information
 
 		if (!(c % 25)) { // output only every 25 MPU/DMP reads
-			BTserial.print("Y: "); BTserial.print(mympu.ypr[0]);
-			BTserial.print(" P: "); BTserial.print(mympu.ypr[1]);
-			BTserial.print(" R: "); BTserial.print(mympu.ypr[2]);
-			BTserial.print("\tgy: "); BTserial.print(mympu.gyro[0]);
-			BTserial.print(" gp: "); BTserial.print(mympu.gyro[1]);
-			BTserial.print(" gr: "); BTserial.println(mympu.gyro[2]);
+			print2("Y: "); print2(mympu.ypr[0]);
+			print2(" P: "); print2(mympu.ypr[1]);
+			print2(" R: "); print2(mympu.ypr[2]);
+			print2("\tgy: "); print2(mympu.gyro[0]);
+			print2(" gp: "); print2(mympu.gyro[1]);
+			print2(" gr: "); print2ln(mympu.gyro[2]);
 			delay(100);
 
 		}
@@ -341,7 +341,7 @@ void moveStraight() {
 		break;
 	}
 	
-	BTserial.println("Put the robot in the start of the maze, looking forword into the maze (parallel to the side wall). After you did it send 'G'");
+	print2ln("Put the robot in the start of the maze, looking forword into the maze (parallel to the side wall). After you did it send 'G'");
 	while (1) {
 		if (BTserial.available() && BTserial.read() == 'G') {
 			break;
@@ -430,14 +430,14 @@ void printIMUData(void)
 	////float magY = imu.calcMag(imu.my);
 	////float magZ = imu.calcMag(imu.mz);
 
-	////BTserial.println("Accel: " + String(accelX) + ", " +
+	////print2ln("Accel: " + String(accelX) + ", " +
 	////	String(accelY) + ", " + String(accelZ) + " g");
-	////BTserial.println("Gyro: " + String(gyroX) + ", " +
+	////print2ln("Gyro: " + String(gyroX) + ", " +
 	////	String(gyroY) + ", " + String(gyroZ) + " dps");
-	////BTserial.println("Mag: " + String(magX) + ", " +
+	////print2ln("Mag: " + String(magX) + ", " +
 	////	String(magY) + ", " + String(magZ) + " uT");
-	////BTserial.println("Time: " + String(imu.time) + " ms");
-	////BTserial.println();
+	////print2ln("Time: " + String(imu.time) + " ms");
+	////print2ln();
 }
 
 void print2(String s) {
